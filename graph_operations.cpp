@@ -32,7 +32,9 @@ public:
     void displayPath(const std::vector<std::string>& shortestPath);
 std::vector<std::string> findMostEconomicalPath(const std::string& source, const std::string& destination);
     void displayMapWithCosts();
+std::vector<std::string> findBFSPath(const std::string& source, const std::string& destination);
     std::map<std::string, std::vector<LocationInfo>> mapGraph;
+
 };
 
 // Constructor: Initialize the village map
@@ -646,4 +648,64 @@ void loadGraph2() {
     
     
     std::cout<<"done!!";
+}
+
+// BFS: finds path with fewest stops (unweighted)
+std::vector<std::string> VillageMap::findBFSPath(const std::string& source, const std::string& destination) {
+    std::unordered_map<std::string, std::string> previous;
+    std::unordered_map<std::string, bool> visited;
+    std::queue<std::string> q;  // standard BFS queue
+
+    visited[source] = true;
+    q.push(source);
+
+    while (!q.empty()) {
+        std::string current = q.front();
+        q.pop();
+
+        if (current == destination) break;
+
+        for (const LocationInfo& neighbor : mapGraph[current]) {
+            if (!visited[neighbor.location]) {
+                visited[neighbor.location] = true;
+                previous[neighbor.location] = current;
+                q.push(neighbor.location);
+            }
+        }
+    }
+
+    // Reconstruct path
+    std::vector<std::string> path;
+    std::stack<std::string> reversedPath;
+    std::string current = destination;
+    while (current != source) {
+        reversedPath.push(current);
+        current = previous[current];
+    }
+    reversedPath.push(source);
+    while (!reversedPath.empty()) {
+        path.push_back(reversedPath.top());
+        reversedPath.pop();
+    }
+    return path;
+}
+
+void loadGraph3() {
+    VillageMap village;
+    // (copy all addLocation + addPath lines from loadGraph1 here)
+    // Then:
+    std::string source, destination;
+    std::cout << "Enter source station: ";
+    std::cin.ignore();
+    std::getline(std::cin, source);
+    std::cout << "Enter destination station: ";
+    std::getline(std::cin, destination);
+
+    std::vector<std::string> bfsPath = village.findBFSPath(source, destination);
+    std::cout << "\nFewest Stops Path (BFS):\n";
+    for (size_t i = 0; i < bfsPath.size(); i++) {
+        std::cout << bfsPath[i];
+        if (i != bfsPath.size() - 1) std::cout << " -> ";
+    }
+    std::cout << "\nTotal Stops: " << bfsPath.size() - 1 << std::endl;
 }
