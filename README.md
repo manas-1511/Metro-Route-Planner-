@@ -1,71 +1,29 @@
+# Metro Route Planner
 
-# Path Finder - Metro Rail Route Finder
+A C++ CLI app to find shortest and cheapest routes on the Delhi Metro. 
+Built this for my semester 3 DSA project.
 
-This project is a Metro Rail Route Finder written in C++ for a semester 3 project. It helps users find the shortest and most economical paths for their metro journeys.
+## What it does
+- Find shortest path between any two stations (Dijkstra)
+- Find cheapest route (cost-weighted Dijkstra)  
+- Find fewest stops (BFS)
+- Metro card with recharge and fare deduction
+- Generates visual route maps using Graphviz
 
-## Prerequisites
+## How to run
 
-Before running the project, you need to install Graphviz.
+Install graphviz first:
+sudo apt-get install graphviz libgraphviz-dev
 
-```bash
-# Install Graphviz
-# Replace with the appropriate installation command for your system
-# Example for Linux:
-sudo apt-get install graphviz
-```
-## Usage
-
-execute the following
-
-```bash
-make 
+Then:
+make
 ./metro
-```
 
-## Program flow
-```bash
-1. Login
-2. Sign up
-3. Exit
-Enter your choice (1-3): 1
-Enter your username: nilay
-Enter your password: 123
-Login successful!
-Welcome nilay!
-Press 0 to logout at any point
-Welcome to the metro path finder
+## File structure
+- metro.cpp — main menu and auth
+- graph_operations.cpp — all graph/routing logic
+- card_operations.cpp — card balance and fare deduction
 
-***** Metro Rail Route Finder *****
-1. Find Shortest Path
-2. Find Most Economical Path
-3. Recharge Metro Card
-Enter your choice: 1
-Enter Source and Destination Stations:
-Graph visualization created successfully.
-Graph loaded successfully in village_map.png
-Shortest Path from Noida City Centre to Noida Sector 18:
-Noida City Centre -> Noida Golf Course -> Botanical Garden -> Noida Sector 18
-done!!
-Welcome to the metro path finder
-
-***** Metro Rail Route Finder *****
-1. Find Shortest Path
-2. Find Most Economical Path
-3. Recharge Metro Card
-Enter your choice: 0
-Logging out. Goodbye!
-1. Login
-2. Sign up
-3. Exit
-Enter your choice (1-3): 3
-Exiting the program. Goodbye!
-```
-### Generated Images:
-* Shortest Path
-* Village Map
-
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Acknowledgments
-Special thanks to the authors of Graphviz.
+## Notes
+Credentials are stored in usernames.txt (sorted, binary search for login).
+Route maps are saved as PNGs in the project folder.
