@@ -1,5 +1,5 @@
 #include <iostream>
-#include "./card_operations.h"
+#include "card_operations.h"
 #include "graph_operations.h"
 #include <string>
 #include <fstream>
@@ -7,42 +7,62 @@
 #include <algorithm>
 
 using namespace std;
+vector<string> travelHistory; // stores past trips this session
+
 
 void userLogin(string username) {
     int choice;
+    vector<string> travelHistory; // stores past trips this session
+
     while (true) {
-        cout<<"Welcome to the metro path finder"<<endl;
-        cout << "\n***** Metro Rail Route Finder *****\n";
-        cout << "1. Find Shortest Path\n";
+        cout << "\nWelcome to the Metro Path Finder, " << username << "!\n";
+        cout << "***** Metro Rail Route Finder *****\n";
+        cout << "1. Find Shortest Path (Dijkstra)\n";
         cout << "2. Find Most Economical Path\n";
-        cout << "3. Recharge Metro Card\n";
-        
-        cout << "Enter your choice: ";
+        cout << "3. Find Fewest Stops Path (BFS)\n";
+        cout << "4. Recharge Metro Card\n";
+        cout << "5. View Travel History\n";
+        cout << "0. Logout\nEnter choice: ";
         cin >> choice;
+
         if (choice == 0) {
             cout << "Logging out. Goodbye!" << endl;
             break;
         }
-        switch (choice)
-        {
-        case 1:
-            loadGraph1();
-            break;
-        // case 2:
-        //     loadGraph();
-            
-            // break;
-        case 2:
-            loadGraph2();
-            break;
-            
-        case 3:
-            cout << "";
-            recharge(username);
-            break;
-        default:
-            cout << "Invalid choice! Please enter a valid option." << endl;
-            break;
+
+        switch (choice) {
+            case 1: {
+                loadGraph1();
+                travelHistory.push_back("Shortest Path trip");
+                deductFare(username, 30.0); // flat fare for shortest path
+                break;
+            }
+            case 2: {
+                loadGraph2();
+                travelHistory.push_back("Most Economical Path trip");
+                deductFare(username, 20.0); // cheaper economical route
+                break;
+            }
+            case 3: {
+                loadGraph3();
+                travelHistory.push_back("Fewest Stops (BFS) trip");
+                deductFare(username, 25.0);
+                break;
+            }
+            case 4:
+                recharge(username);
+                break;
+            case 5:
+                cout << "\n--- Travel History ---\n";
+                if (travelHistory.empty()) {
+                    cout << "No trips taken yet.\n";
+                } else {
+                    for (size_t i = 0; i < travelHistory.size(); i++)
+                        cout << i + 1 << ". " << travelHistory[i] << "\n";
+                }
+                break;
+            default:
+                cout << "Invalid choice!\n";
         }
     }
 }
