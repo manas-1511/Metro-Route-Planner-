@@ -1,33 +1,48 @@
 #include "card_operations.h"
 #include <iostream>
+#include <fstream>
 #include <string>
-
 using namespace std;
 
+// Saves balance to a file so it persists across runs
+static double loadBalance(const string& username) {
+    ifstream f(username + "_balance.txt");
+    double bal = 200.0; // default starting balance
+    if (f.is_open()) f >> bal;
+    return bal;
+}
+
+static void saveBalance(const string& username, double balance) {
+    ofstream f(username + "_balance.txt");
+    f << balance;
+}
 
 void recharge(string username) {
-    double cid=123432; double amt, amount=345;
+    double amount = loadBalance(username);
     int choice;
-    
     do {
-        std::cout << "\n1. Recharge\n";
-        std::cout << "2. Exit\n";
-        std::cout << "Enter your choice: ";
-        std::cin >> choice;
-        switch (choice) {
-            case 1:
-                std::cout << "\nCard Id: " << cid << std::endl;
-                std::cout << "Initial Balance: " << amount << std::endl;
-                std::cout << "Recharge Amount: "<< std::endl;
-                std::cin >> amt;
-                amount=amount+amt;
-                std::cout << "Total Balance: " << amount << std::endl;
-                break;
-            case 2:
-                std::cout << "Exiting...";
-                break;
-            default:
-                std::cout << "Invalid choice. Please try again.";
+        cout << "\nCurrent Balance: Rs." << amount << endl;
+        cout << "1. Recharge\n2. Exit\nEnter choice: ";
+        cin >> choice;
+        if (choice == 1) {
+            double amt;
+            cout << "Enter recharge amount: ";
+            cin >> amt;
+            amount += amt;
+            saveBalance(username, amount);
+            cout << "Recharged! New Balance: Rs." << amount << endl;
         }
     } while (choice != 2);
+}
+
+// Call this after a trip is taken to deduct fare
+void deductFare(const string& username, double fare) {
+    double balance = loadBalance(username);
+    if (balance < fare) {
+        cout << "Insufficient balance! Please recharge. Current: Rs." << balance << endl;
+        return;
+    }
+    balance -= fare;
+    saveBalance(username, balance);
+    cout << "Fare deducted: Rs." << fare << " | Remaining Balance: Rs." << balance << endl;
 }
